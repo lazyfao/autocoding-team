@@ -1,0 +1,12 @@
+[Unit]
+Description={{PROJECT}}: next developer tick {{GAP_MIN}} min after the previous one ends
+
+[Timer]
+# The first tick a minute after the timer starts, then {{GAP_MIN}} min after each run ends (not after it starts),
+# so runs never overlap, however long they take.
+OnActiveSec=1min
+OnUnitInactiveSec={{GAP_MIN}}min
+AccuracySec=5s
+
+[Install]
+WantedBy=timers.target

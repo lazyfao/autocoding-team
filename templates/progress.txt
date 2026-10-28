@@ -1,0 +1,9 @@
+{{PROJECT_UPPER}} - PROGRESS        updated {{DATE}}
+[✓] done   [>] in progress   [ ] next   [!] stopped
+
+[>] Setup: team files, developer on a timer
+    [✓] orchestrator instructions, board, developer onboarding
+    [ ] developer: environment, baseline tests, its own instructions
+{{PHASE_LINES}}
+
+Waiting on you: {{WAITING}}

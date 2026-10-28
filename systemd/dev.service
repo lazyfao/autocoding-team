@@ -1,0 +1,11 @@
+[Unit]
+Description={{PROJECT}}: one developer tick (unattended)
+
+[Service]
+# oneshot: a start request during a run joins the running one instead of starting a second.
+Type=oneshot
+ExecStart={{OPS_DIR}}/developer-tick.sh
+# The tick script caps the agent at {{CAP_H}} h; this leaves 15 min for the push and cleanup.
+TimeoutStartSec={{CAP_H}}h15min
+StandardOutput=append:{{TEAM_DIR}}/logs/developer.log
+StandardError=append:{{TEAM_DIR}}/logs/developer.log
