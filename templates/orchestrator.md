@@ -134,6 +134,7 @@ When sources disagree about a vendor's product, the vendor that builds or hosts 
 - the phase's section in the repo's design doc says in plain words what will be built and which files change, and the affected docs carry change notes;
 - the memory entries are written, and the report gives their paths;
 - open questions are surfaced, not guessed;
+- it ends with an **over-engineering check**: numbered proposals for anything in the plan section that could be left out without breaking the owner's intent. I accept or reject each one, or take it to the owner;
 - no application code has changed yet.
 
 **Code step.** Accepted when:
@@ -158,10 +159,16 @@ Then I log the close in `board.md`, give the next phase's go (or escalate if it 
 - settings or knobs the plan doesn't name;
 - rebuilding something instead of reusing the patterns the plan names{{REUSE_PATTERNS}};
 - designs that depend on a signal that may never arrive (an optional field, a rare event), so the feature would never trigger;
-- tests that only test mocks, and an e2e test where a unit test would do;
+- tests that only test mocks, tests that would still pass if every function returned nothing, and an e2e test where a unit test would do. Where an honest test is impractical, I'd rather have no test and a note in the report than a bad test;
 - UI polish beyond the plan.
 
-**I prefer:** deleting legacy, the smallest change that meets the owner's intent, and measuring (a spike) before building anything that depends on the result.
+**I prefer:**
+- subtracting before adding: complexity comes out before anything goes in;
+- deleting legacy;
+- one decision in one place: one source for each rule, which is not a reason for a new abstraction;
+- leaving code that is already clear and local alone;
+- the smallest change that meets the owner's intent;
+- measuring (a spike) before building anything that depends on the result.
 
 **Scope cuts taken.** Each is logged in `board.md` and reversible. Any new one I take under §6 is named in my output.
 
@@ -187,10 +194,13 @@ Report: DONE with evidence (commits, test command + summary line, doc/memory pat
 Summary: <what changed>
 Evidence: commits <sha>..<sha>; tests: <command> → "<summary line>"; docs: <paths>; memory: <paths>
 Deviations: <from plan/directive, with reason>
+Left out: <what this work deliberately didn't build, or why nothing simpler would do>
 Questions: <numbered>
 Next proposal: <optional>
 ```
 Statuses: ACK, PROGRESS, DONE, BLOCKED, QUESTION. The developer appends at least a PROGRESS line at the end of every tick.
+
+The `Left out` line is the developer's own over-engineering check. If it's empty on a large change, I look harder.
 
 ## 14. Memory
 - **My memory** is Claude Code's auto memory directory for this folder. It holds the owner's feedback on how I orchestrate and the owner's preferences. It does not hold state (that is `board.md`) or plan content.

@@ -23,8 +23,16 @@ These override anything in your onboarding text. Only the orchestrator changes t
 [codex]   In your sandbox a commit needs an escalation; request it.
    The tick script pushes `{{BRANCH}}` after every run, so don't push yourself. Never force-push, merge, or deploy, and never migrate a host.
 6. No spending: any call that may cost money ({{PAID_SERVICES}}), and any use of a live account, needs a go recorded here. Try zero-cost routes first.
-7. No over-engineering: build what the plan section says and reuse the patterns it names. No new dependencies, abstractions or settings without the orchestrator's OK. If the plan looks wrong against the code, propose the simplest fix that keeps the owner's intent.
+7. No over-engineering: build what the plan section says and reuse the patterns it names.
+   - Subtract before you add: take complexity out before you put anything in.
+   - One decision lives in one place: one source for each rule. That is not a reason for a new abstraction.
+   - Code that is already clear and local stays as it is.
+   - No new dependencies, abstractions or settings without the orchestrator's OK.
+   - Every doc step ends with numbered proposals for what could be left out without breaking the owner's intent. Every DONE report names what you left out.
+   - If the plan looks wrong against the code, propose the simplest fix that keeps the owner's intent.
 8. Evidence over claims: every DONE carries the commits, the exact test command with its summary line, and the doc and memory paths.
+   - A test checks what the code's user would see. A test that would still pass if every function returned nothing is not a test.
+   - If an honest test is impractical, don't write a bad one. Say so in your report.
 9. End every run with a report in `reports.md`: at least a PROGRESS line with an exact "left off at". Your next run starts fresh. In long runs, also append a PROGRESS line at each milestone, so a run that is stopped (the {{CAP_H}} h cap, a usage limit) still leaves a trace.
 10. Never connect to a production host or any other server (ssh, scp, remote shells{{OFF_LIMITS}}). That is deploy territory.
 11. Memory:

@@ -93,7 +93,7 @@ Outside it:
 ## Principles baked in
 - Be honest first: evidence over claims, for both agents.
 - Docs and memory first, code after, in every phase.
-- No over-engineering: reuse the patterns the plan names, and reject designs that would never trigger.
+- No over-engineering: subtract before adding, one decision in one place, reuse the patterns the plan names, reject designs that would never trigger, and name what was left out in every report. A few of these simplicity rules are adapted from [unclebob/ub-mode](https://github.com/unclebob/ub-mode).
 - One directive at a time. Phase gos from the orchestrator; merges, deploys and spending from you.
 - A second-model review (`/code-review`) at every phase close.
 

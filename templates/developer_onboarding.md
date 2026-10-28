@@ -58,9 +58,9 @@ It should cover:
    - where the UI strings and their guard tests live;
    - where the docs live and how they are written;
    - commit messages.
-6. **The doc step:** what you write before any code, and how you show it.
+6. **The doc step:** what you write before any code, and how you show it. It ends with numbered proposals for anything that could be left out without breaking the owner's intent.
 7. **Your Definition of Done:** a concrete checklist with commands, matching `orchestrator.md` §9.
-8. **Reports:** how you write evidence (commits, the test command with its summary line, doc and memory paths).
+8. **Reports:** how you write evidence (commits, the test command with its summary line, doc and memory paths), and the `Left out` line: what you deliberately didn't build.
 9. **Gotchas:** a living section. Add every repo or sandbox trap you hit, so the next run doesn't hit it again.
 
 **Rules for the file**
