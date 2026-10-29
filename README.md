@@ -61,9 +61,7 @@ These all happened in real setups. The form explains each field, and the setup c
 
 | Mistake | What goes wrong | Do this instead |
 |---|---|---|
-| A typo in a plan path | the setup stops: no plan | check every path with `ls` |
 | The worktree path is the team folder | `git worktree add` refuses a non-empty folder, and the board and reports would end up inside the repo | a **new** folder next to the repo, such as `<repo>-<short name>` |
-| A leftover `>` from `team/<short name>` | a branch name that breaks shell commands | replace the whole placeholder, brackets included |
 | A copy of the skill in the team folder | the setup's placeholder check fails, and the developer may read the templates as instructions | install the skill once, outside; the team folder holds only the form and the plan(s) |
 | A local `main` as the base | the work starts days behind the remote | `origin/main`; the setup fetches first |
 | "Shared resources" left empty | the developer's test runs drop your databases, or another team's | list what the tests drop and which ports they use; the team gets its own instance |
