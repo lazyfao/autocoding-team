@@ -49,3 +49,16 @@ Every rule in the templates came from something that happened in a real run of t
     - `--ignore-rules` and `--disable apps` keep the owner's own allowlist and app connectors (merge, deploy) away from the developer.
 29. **Hook findings on untouched code: list once, move on.** Without this rule, design-lint hooks pulled the developer into fixing old code outside the directive.
 30. **Known flakes need fresh evidence.** A full run is green only if the known flakes are its only failures and that same report shows them passing alone.
+
+## Setting up and reporting
+31. **Check the form before changing anything.** The first real setup's form had:
+    - a plan path with a typo;
+    - the worktree pointed at the team folder;
+    - a branch name with a leftover `>`;
+    - a clone of the skill inside the team folder;
+    - an empty spending list for a task whose whole point was a paid cloud service;
+    - no slug, and the obvious slug was already another team's. Using it would have overwritten that team's timer and scripts.
+
+    Another team was working on the same repo: it had changed the same files and taken the same migration numbers, and the two developers shared one usage limit. The form now explains each field, and step 1 of the setup checks for every one of these before it touches anything.
+32. **Print the checklist every tick.** The owner follows progress through the orchestrator's replies, not by opening files. Every tick's reply starts with the full `progress.txt`.
+33. **Times come from `date`.** The orchestrator once stamped board entries 7–25 minutes in the future, by estimating the time from how long the work seemed to take. Run `date` right before writing any time.

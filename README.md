@@ -44,16 +44,32 @@ ln -s ~/autocoding-team ~/.claude/skills/autocoding-team
 Start a new Claude Code session afterwards, so it picks the skill up.
 
 ## Start a project
-1. Make an empty team folder, for example `~/myproject_team`.
-2. Copy `PREREQUISITES.md` into it and fill in at least the task and the plan path. `examples/PREREQUISITES.example.md` shows a filled one.
-3. Open Claude Code in that folder and run `/autocoding-team`.
-4. Answer its intake questions (one batch).
-5. It writes the team files and the machinery, tests them, and hands you two commands:
+1. Make an empty team folder, for example `~/myproject_team`. It holds coordination files only. The code lives in a separate worktree that the setup creates.
+2. Copy `PREREQUISITES.md` into it, together with your plan file(s). Nothing else goes in: no copy of this skill.
+3. Fill in at least the task and the plan path(s). `examples/PREREQUISITES.example.md` shows a filled-in form.
+4. Open Claude Code in that folder and run `/autocoding-team`. It checks the form first and stops with exact fixes if something is wrong.
+5. Answer its intake questions (one batch).
+6. It writes the team files and the machinery, tests them, and hands you two commands:
    ```
    systemctl --user enable --now <slug>-dev.timer
    /loop Orchestrator tick: follow <team>/orchestrator.md §7
    ```
-From there, the orchestrator wakes when the developer reports, decides, and writes the next directive. `progress.txt` in the team folder is your glanceable status. `touch <team>/PAUSE` stops the developer.
+From there, the orchestrator wakes when the developer reports, decides, and writes the next directive. Every tick's reply starts with the full `progress.txt`, your checklist. `touch <team>/PAUSE` stops the developer.
+
+## Setting up correctly: common mistakes
+These all happened in real setups. The form explains each field, and the setup checks for each mistake before it changes anything.
+
+| Mistake | What goes wrong | Do this instead |
+|---|---|---|
+| A typo in a plan path | the setup stops: no plan | check every path with `ls` |
+| The worktree path is the team folder | `git worktree add` refuses a non-empty folder, and the board and reports would end up inside the repo | a **new** folder next to the repo, such as `<repo>-<short name>` |
+| A leftover `>` from `team/<short name>` | a branch name that breaks shell commands | replace the whole placeholder, brackets included |
+| A copy of the skill in the team folder | the setup's placeholder check fails, and the developer may read the templates as instructions | install the skill once, outside; the team folder holds only the form and the plan(s) |
+| A local `main` as the base | the work starts days behind the remote | `origin/main`; the setup fetches first |
+| "Shared resources" left empty | the developer's test runs drop your databases, or another team's | list what the tests drop and which ports they use; the team gets its own instance |
+| A paid service missing from the spending list, typically the one being integrated | the developer may treat it as free | list every paid API and live account, including the task's own |
+| A slug that's already taken | the setup would overwrite another team's timer and scripts | a unique slug; `ls -d ~/.config/*-devteam` shows the taken ones |
+| Another team on the same repo goes unmentioned | the same files change on both branches, migration numbers clash, test resources are shared, and one usage limit runs out twice as fast | fill §6; the setup compares the branches and asks you how to handle the overlap |
 
 ## What it builds
 | In the team folder | Writer | Purpose |

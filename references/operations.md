@@ -66,6 +66,7 @@ A test that fails under full-suite load and passes alone goes under "Now" in the
 
 ## The orchestrator loop
 - Start it: `/loop Orchestrator tick: follow <team>/orchestrator.md §7` in the root conversation.
+- Every tick's reply starts with the full `progress.txt` in a code block, so the owner can follow along without opening the file. It ends with the new version if the tick changed it.
 - Each tick ends by arming `wait-report.sh <last report read>` in the background (if none is running) and a 1800–3600 s fallback wakeup.
 - To stop it: stop the wakeup; the timer and developer keep running on their own until `PAUSE`.
 

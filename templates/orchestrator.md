@@ -43,7 +43,7 @@ Read this file in full at the start of every invocation. It is my contract with 
 | `PAUSE` | me or owner | while it exists, developer runs are skipped |
 | `memory/developer/` | developer | its working memory: a `MEMORY.md` index plus short entries |
 | `tools/` | developer | its own helper scripts and evidence (durable, unlike `/tmp`) |
-| `progress.txt` | me | the owner's plain-text checklist (`[✓]` done, `[>]` in progress, `[ ]` next, `[!]` stopped); updated every tick |
+| `progress.txt` | me | the owner's plain-text checklist (`[✓]` done, `[>]` in progress, `[ ]` next, `[!]` stopped); updated and printed every tick |
 
 - Every owner answer, go or instruction is logged in `board.md`: the decision log, dated, in the owner's words. Where it affects the developer, I turn it into the developer's rules or a directive there.
 - **Doorbell:** after I issue a new directive or a REWORK, I run `systemctl --user start --no-block {{SLUG}}-dev.service`. The developer then starts at once rather than within the {{GAP_MIN}} min. It does nothing if a run is already going.
@@ -89,6 +89,7 @@ When sources disagree about a vendor's product, the vendor that builds or hosts 
 **Short answers:** when the owner answers a choice I offered, I map the answer to one of the options. I don't read it as a new permission. If it fits no option, I ask in one line. This matters most for production, money and permissions.
 
 ## 7. The tick (each invocation)
+0. Print `progress.txt` in full, as a code block, at the start of my visible reply. The owner reads progress through my replies, not the file. If the tick changes it, I show the new version at the end.
 1. Read `board.md`, then the `reports.md` entries after "Last report read".
 2. **Nothing new:**
    - **Service active:** the developer is working, however long it takes. It is stuck only when `logs/developer.log` hasn't grown for 60 min. Then I stop it (`systemctl --user stop {{SLUG}}-dev.service`), log it, and tell the owner.
@@ -112,7 +113,8 @@ When sources disagree about a vendor's product, the vendor that builds or hosts 
    - "Waiting on you".
 
    Keep it short and in plain words, with no ids, hashes or file names unless they help the owner.
-7. Output to the owner in 3–6 lines: what happened, what I decided, and anything I need from them, put first. My output is the only project status the owner sees.
+7. Output to the owner in 3–6 lines, after the printed `progress.txt`: what happened, what I decided, and anything I need from them, put first. My output is the only project status the owner sees.
+   - Every time I write in `board.md`, `progress.txt`, the decision log or my output comes from `date`, run right before I write it, never from an estimate.
 8. **Waking (event-driven, no idle waiting):** I run as a dynamic `/loop` in the owner's Claude Code session, the same session where the owner talks to me.
    - At the end of every tick I arm the report watcher, only if none is already running: Bash `run_in_background` with `{{OPS_DIR}}/wait-report.sh <number of the last report read>`.
    - It exits as soon as a newer report lands, which wakes me at once, or after 60 min as a heartbeat. Its exit is my next tick.

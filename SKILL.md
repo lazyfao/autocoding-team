@@ -27,14 +27,37 @@ Read `references/lessons.md` once before step 4. The rules in the templates are 
 ## Step 1: Prerequisites
 - The team folder is the argument, or the current folder. Look for `PREREQUISITES.md` there.
 - If it's missing, copy this skill's `PREREQUISITES.md` there. Tell the owner to fill sections 1–2 (the rest has defaults), and stop.
-- Required: §1 the task text, and §2 a plan path that exists. If either is missing, say exactly what is missing and stop.
+- Required: §1 the task text, and §2 one or more plan paths that exist. If either is missing, say exactly what is missing and stop.
 - Defaults for empty fields:
   - developer `codex`, a 5 min gap, a 6 h cap, push backup on;
   - escalate merges, deploys and spending; the orchestrator gives phase gos;
+  - the base `origin/<default branch>`;
   - the work branch `team/<slug>`;
-  - the worktree next to the repo;
+  - the worktree `<repo>-<slug>` next to the repo;
   - the house rules as printed in the form.
-- Choose a `<slug>`: short, lowercase, from the project name. It names the units (`<slug>-dev.timer`) and the ops folder (`~/.config/<slug>-devteam/`).
+- **The slug:** the form's value, or short and lowercase from the project name. It names the units (`<slug>-dev.timer`) and the ops folder (`~/.config/<slug>-devteam/`).
+
+**Check the form before anything else.** Each line below is a mistake that happened in a real setup. List every problem in one message, with the exact fix, and stop until the owner fixes the form or agrees to your fix.
+1. **Plan paths:** every one exists (`ls`). A typo in a file name is the usual cause.
+2. **Placeholders:** no `<` or `>` is left in a value. A stray `>` from `team/<short name>` makes a valid but shell-hostile branch name.
+3. **The work branch** passes `git check-ref-format --branch <branch>`. It doesn't exist yet, or the owner said to reuse it.
+4. **The worktree path** doesn't exist yet. It is not the team folder, and not inside it.
+5. **The team folder** holds only the form and the plan(s): no copy of this skill, no repo. A skill copy there makes the step 6 placeholder check fail, and the developer could read the templates as instructions.
+6. **The base:** run `git -C <repo> fetch` and check that the base resolves. If the owner named a local branch that is behind its remote (`git rev-list --count <local>..origin/<local>`), propose the remote one.
+7. **The slug is free:** neither `~/.config/<slug>-devteam` nor `~/.config/systemd/user/<slug>-dev.*` exists. **Never overwrite them:** they belong to another team.
+8. **Spending:** if the task text or the plan names a paid service (a cloud API, a hosted model, a paid SaaS) that the spending list (§5) leaves out, add it to your questions.
+9. **Other teams:** look for them even when §6 is empty:
+   - `git -C <repo> worktree list`;
+   - `ls -d ~/.config/*-devteam`;
+   - the user's systemd units named `*-dev.timer`.
+
+   For each team working on the same repo, compare:
+   - the files the plan names with `git diff --name-only <base>..<their branch>`;
+   - the migration numbers each side adds, which can clash;
+   - the test resources and their ports;
+   - whether both developers use one account.
+
+   Take the overlaps into your questions (step 3).
 
 ## Step 2: Read
 - Read the task text and the **whole** plan.
@@ -52,6 +75,12 @@ Ask everything in one message, numbered, each with your recommendation, so the o
 5. **Gaps between the task text and the plan:** features in one but not the other, contradictions, text that looks like litter. Quote both sides.
 6. **Test isolation**, if the tests could damage shared resources (fixtures that drop and recreate databases, fixed ports). Propose a private instance that `ensure_env` starts.
 7. **Protected checkout:** if the main checkout is dirty, confirm that nobody touches it and the work happens in a worktree.
+8. **Other teams** (from step 1, check 9):
+   - **The base:** branch from the main line and settle conflicts at merge time, or stack on the other team's branch. Give the overlapping files and a recommendation.
+   - **Migration numbers:** who renumbers.
+   - **The shared usage limit.**
+
+   Record the answers in both teams' notes: in your board, and as a line for the owner to pass to the other orchestrator.
 
 Log every answer in the board's decision log, dated, in the owner's words. Map short answers to the options you offered; never stretch one into a new permission.
 
@@ -99,6 +128,7 @@ In the team folder:
 1. **The worktree:** `git -C <repo> worktree add -b <branch> <worktree> <base>`. It doesn't touch the main checkout's files.
    - **From scratch:** `git init <path>`, an initial commit on `<branch>`, and a remote only if the owner wants the backup (`gh repo create --private`, with their OK).
 2. **The ops folder:**
+   - check once more that `<ops>` and `~/.config/systemd/user/<slug>-dev.*` don't exist; if they do, stop. They are another team's;
    - `mkdir -p <ops>`;
    - copy `scripts/developer-tick.sh` and `scripts/wait-report.sh` there, fill their placeholders, and `chmod +x` them;
    - write the agreed test isolation into `ensure_env`.
@@ -126,7 +156,7 @@ Tell the owner, in a few lines:
   /loop Orchestrator tick: follow <team>/orchestrator.md §7
   ```
   The first runs in their terminal; you may run it on their OK. The second they type here.
-- that `progress.txt` is their glanceable status;
+- that `progress.txt` is their glanceable status, and every tick's reply starts with it in full;
 - that they can pause everything with `touch <team>/PAUSE`.
 
 From then on, `orchestrator.md` §7 drives every tick, and `references/operations.md` is your run book. After R-001 is accepted, record the test baseline and any known flakes under "Now" in the board.

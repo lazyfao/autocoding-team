@@ -25,6 +25,7 @@ Path: `~/notes-team/teams_plan.md`
 
 ## 4. The developer
 - Agent: `codex`
+- Slug: `notes` (`ls -d ~/.config/*-devteam` shows no other `notes`)
 - Model and reasoning effort: defaults
 - Gap between runs: 5 min
 - Run cap: 6 h
@@ -36,7 +37,10 @@ Path: `~/notes-team/teams_plan.md`
 - Paid services and live accounts that count as spending: the email provider (invites), the OpenAI API
 - Off limits: `prod.notes.example`, the staging database
 
-## 6. House rules
+## 6. Other teams on this repo or machine
+None. (`git -C ~/code/notes worktree list` shows only the main checkout.)
+
+## 7. House rules
 - Docs and memory first, code after.
 - No over-engineering.
 - Legacy is removed outright, no shims.
