@@ -62,3 +62,14 @@ Every rule in the templates came from something that happened in a real run of t
     Another team was working on the same repo: it had changed the same files and taken the same migration numbers, and the two developers shared one usage limit. The form now explains each field, and step 1 of the setup checks for every one of these before it touches anything.
 32. **Print the checklist every tick.** The owner follows progress through the orchestrator's replies, not by opening files. Every tick's reply starts with the full `progress.txt`.
 33. **Times come from `date`.** The orchestrator once stamped board entries 7–25 minutes in the future, by estimating the time from how long the work seemed to take. Run `date` right before writing any time.
+34. **Scale the test gate to risk, and keep the baseline green.** Two weeks of logs from three teams showed full test suites taking 60%, 39% and 27% of the developers' run time. Three causes:
+    - **The same full suite for every change.** One team ran 87 full suites for 55 completed tasks, and a full rerun after a small fix was common.
+    - **A red baseline.** In two teams, every full run reported 15 or more failures from one test file that only broke inside the developer's sandbox. Each run had to prove again that they weren't its fault.
+    - **A suite that grew** from 18 to 48 minutes and ran on one core.
+
+    The rules now:
+    - each directive names its test level (targeted, or full at the end), and phase close always runs a full suite;
+    - after a fix, only the failing and affected tests run, unless the fix touched shared code;
+    - a known-failures list, with a reason for each, decides what counts as green;
+    - a suite past about 20 minutes gets a directive to make it faster;
+    - evidence is the commits, the command and its summary line, nothing more unless asked.

@@ -58,8 +58,16 @@ Codex only: check that no forbidden command **ran**. Grep the executed-command l
 grep -E '^/usr/bin/(ba|z)?sh -lc ' <team>/logs/developer.log | grep -cE '(^|[^[:alnum:]_.-])(ssh|scp|tailscale)([[:space:]]|$)'   # 0
 ```
 
-## Known flakes
-A test that fails under full-suite load and passes alone goes under "Now" in the board, with its evidence. A later full run counts as green only if the known flakes are its only failures *and* that run's report shows each one passing when rerun alone. Your own earlier reruns don't substitute for that run's evidence.
+## Test levels and known failures
+- **Each directive names its test level** (`orchestrator.md` §9):
+  - **targeted:** small, low-risk changes;
+  - **full at the end:** one full suite per code directive; after a fix, only the failing and affected tests, unless the fix touched shared code;
+  - **full, always:** at phase close and before a merge.
+- **Known failures:** test IDs that fail at the base, each with its reason, under "Now" in the board. A full run is green when all of its failures are on the list. Only new failures are rerun alone and explained.
+  - Add a test to the list only with a reason.
+  - Remove it when it's fixed.
+  - A group that fails for one environmental reason (for example, tests that only break inside the developer's sandbox) is fixed once in the test setup. It isn't explained again in every report.
+- **Suite speed:** check the full run's duration under "Now". Past about 20 minutes, plan one directive to make it faster (parallel workers, which may need per-worker test databases). It pays back in every directive after it.
 
 ## Phase close
 `/code-review medium` on the phase diff, run by the orchestrator: a second model's review. Triage every finding. Send the real ones back as one REWORK with an exact numbered list, and record the rejected ones with a reason. Expect real bugs; in the author's project, the two reviews found 8 and 12 real issues, including a money leak.

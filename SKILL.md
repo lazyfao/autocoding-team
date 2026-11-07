@@ -159,4 +159,4 @@ Tell the owner, in a few lines:
 - that `progress.txt` is their glanceable status, and every tick's reply starts with it in full;
 - that they can pause everything with `touch <team>/PAUSE`.
 
-From then on, `orchestrator.md` §7 drives every tick, and `references/operations.md` is your run book. After R-001 is accepted, record the test baseline and any known flakes under "Now" in the board.
+From then on, `orchestrator.md` §7 drives every tick, and `references/operations.md` is your run book. After R-001 is accepted, record under "Now" in the board: the test baseline, the known failures with their reasons, and the full run's duration. If a full run takes more than about 20 minutes, plan the suite-speed directive (`orchestrator.md` §9) early.

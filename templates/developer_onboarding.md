@@ -50,6 +50,7 @@ It should cover:
 3. **End of run:** commit, then append your report to `reports.md` with an exact "left off at".
 4. **Repo facts**, as exact commands that you have actually run, here, in your environment:
    - the backend and frontend tests (env vars, databases), lint and type checks;
+   - the targeted form: one test file, and the tests for a set of changed files. You run that while working; the full suite only where a directive says (board rule 16);
    - how to run the app locally and look at a changed page (light and dark, {{UI_LANGS}}, desktop and phone), if there is a UI;
    - migrations (where they live, how they are numbered);
    - mutation checks and the e2e scripts, as this repo does them.

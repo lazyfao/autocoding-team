@@ -8,8 +8,9 @@ Written by the orchestrator only. The developer reads it at the start of every t
 - **Base:** {{BASE}}
 - **Remote backup:** {{BACKUP_STATE}}
 - **Test baseline:** pending (D-001).
-- **Known flaky tests:** none yet.
-  - **Gate rule:** a full run counts as green if the known flakes are its only failures *and* the report shows each one passing when rerun alone.
+- **Known failures:** none yet (D-001 records them): test IDs that fail at the base, each with its reason.
+  - **Gate rule:** a full run is green when every one of its failures is on this list. A new failure is rerun alone and explained in the report.
+- **Full suite duration:** pending (D-001).
 - **Developer liveness:** a run may take hours. It counts as stuck only when the service is active and `logs/developer.log` has been silent for 60 min.
 {{PROTECTED_BASELINE}}
 
@@ -30,7 +31,7 @@ These override anything in your onboarding text. Only the orchestrator changes t
    - No new dependencies, abstractions or settings without the orchestrator's OK.
    - Every doc step ends with numbered proposals for what could be left out without breaking the owner's intent. Every DONE report names what you left out.
    - If the plan looks wrong against the code, propose the simplest fix that keeps the owner's intent.
-8. Evidence over claims: every DONE carries the commits, the exact test command with its summary line, and the doc and memory paths.
+8. Evidence over claims: every DONE carries the commits, the exact test command with its summary line, and the doc and memory paths. That is all the evidence a report needs. No snapshots, file hashes or retained copies of earlier runs unless the directive asks for them.
    - A test checks what the code's user would see. A test that would still pass if every function returned nothing is not a test.
    - If an honest test is impractical, don't write a bad one. Say so in your report.
 9. End every run with a report in `reports.md`: at least a PROGRESS line with an exact "left off at". Your next run starts fresh. In long runs, also append a PROGRESS line at each milestone, so a run that is stopped (the {{CAP_H}} h cap, a usage limit) still leaves a trace.
@@ -43,6 +44,12 @@ These override anything in your onboarding text. Only the orchestrator changes t
 13. Helpers you write for yourself (browser checks, scripts, evidence) live in `{{TEAM_DIR}}/tools/`, not in `/tmp` (lost on reboot), and not in the repo unless a directive says so.
 14. Lint, design or other hook findings on code you did **not** change in this directive: list them once in your report and move on. Don't fix them, don't suppress them, don't ask again. Findings on code you changed are yours to fix.
 15. A test that fails, then passes when rerun alone, is reported as a suspected flake with both results. Never call a run green by assumption.
+16. Run tests at the level the directive names:
+    - targeted tests (what you changed, plus its direct neighbours) while you work;
+    - a full suite only where the directive says, normally once, at the end;
+    - after a fix, rerun the failing and affected tests, not the full suite, unless the fix touched shared code (fixtures, base classes, configuration, migrations).
+
+    Failures on the board's known-failures list don't need explaining again. Only new ones do.
 {{OWNER_RULES_FOR_DEVELOPER}}
 
 ## Waiting on owner
@@ -65,7 +72,7 @@ Nothing right now.
    - the test resources from rule 12.
 
    Record every command you actually ran.
-3. **The baseline:** run every test suite once at the base commit. Record the exact commands and their summary lines. Don't fix failures; list them, with a rerun alone for each one.
+3. **The baseline:** run every test suite once at the base commit. Record the exact commands, their summary lines and how long the full run took. Don't fix failures; list them, with a rerun alone for each one and the reason each fails. Those become the board's known-failures list.
 4. **The UI, if the project has one:** open one page in a browser (headless is fine) to prove you can. Record how you did it.
 5. **Write `developer.md`**, following the brief in `developer_onboarding.md`. Create `memory/developer/MEMORY.md`.
 6. **Plan vs code:** list where the plan's paths or facts disagree with the code. Don't fix them.
@@ -75,7 +82,8 @@ Nothing right now.
 
 **Done when:** R-001 is DONE with:
 - the setup commands;
-- the test commands with their literal summary lines;
+- the test commands with their literal summary lines, and the full run's duration;
+- the failing tests, each with its reason;
 - the path to `developer.md`;
 - the plan-vs-code list;
 - the questions;

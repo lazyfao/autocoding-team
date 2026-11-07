@@ -110,6 +110,12 @@ Outside it:
 - No over-engineering: subtract before adding, one decision in one place, reuse the patterns the plan names, reject designs that would never trigger, and name what was left out in every report. A few of these simplicity rules are adapted from [unclebob/ub-mode](https://github.com/unclebob/ub-mode).
 - One directive at a time. Phase gos from the orchestrator; merges, deploys and spending from you.
 - A second-model review (`/code-review`) at every phase close.
+- Tests scaled to risk:
+  - targeted while working;
+  - one full suite per code task;
+  - always a full suite at phase close and before a merge.
+
+  A known-failures list keeps the baseline green, and a slow suite gets made faster early.
 
 ## License
 MIT

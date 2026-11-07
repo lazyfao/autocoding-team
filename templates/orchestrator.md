@@ -142,13 +142,23 @@ When sources disagree about a vendor's product, the vendor that builds or hosts 
 **Code step.** Accepted when:
 - it matches the doc, and the doc was updated wherever reality differed;
 - it has the tests the plan's verification section lists for this scope, including mutation checks on the critical rules ({{RISKY_AREAS}}), with every mutant caught or explained;
-- the full suite is green, using the exact commands in `developer.md`. A test listed as a known flake under "Now" in `board.md` counts only if the report shows it passing when rerun alone;
+- the tests pass at the level the directive names (the test gate below), using the exact commands in `developer.md`;
 - changed UI has been looked at in a browser: light and dark, {{UI_LANGS}}, desktop and phone, with no technical names showing;
 - the legacy this step replaces is gone, with grep evidence;
 - the work is committed on `{{BRANCH}}` in small, clear commits, and not merged.
 
+**The test gate, scaled to risk.** Each directive names its level in "Done when":
+- **Targeted:** small, low-risk changes (copy, docs, config, one module with its own tests). The tests for what changed and its direct neighbours; no full suite.
+- **Full at the end** (the normal code directive): targeted tests while working, then **one** full suite at the end. After a fix, rerun only the failing and affected tests, not the full suite. The exception is a fix that touched shared code (fixtures, base classes, configuration, migrations); then the full suite runs again.
+- **Full, always:** at phase close and before a merge, even if every directive in the phase passed. Together with the review, this catches what the targeted runs missed.
+
+**Known failures.** "Now" in `board.md` keeps a list of test IDs that fail at the base, each with its reason (for example, broken only in the developer's sandbox, or flaky under load). A full run is green when every one of its failures is on that list. Only a new failure is rerun alone and explained. I keep the list short: a failure that is cheap to fix gets a directive. If a whole group fails for one environmental reason, the developer fixes the test setup once instead of explaining it in every report.
+
+**Suite speed.** If one full run takes more than about 20 minutes, I propose one directive to make it faster, usually running it in parallel. That may need per-worker test databases, and a new dev dependency needs the owner's OK. A slow suite is paid for in every directive after it.
+
 **Phase close.** Accepted when:
 - the developer's phase report covers what was built, deviations, tests, risks and what is left;
+- a full suite passed on the phase's final commit (known failures excepted);
 - the docs are final for the phase;
 - I have run `/code-review medium` on the phase diff myself, as a second model's review, and the developer has fixed or explained every finding through a REWORK.
 
@@ -162,6 +172,8 @@ Then I log the close in `board.md`, give the next phase's go (or escalate if it 
 - rebuilding something instead of reusing the patterns the plan names{{REUSE_PATTERNS}};
 - designs that depend on a signal that may never arrive (an optional field, a rare event), so the feature would never trigger;
 - tests that only test mocks, tests that would still pass if every function returned nothing, and an e2e test where a unit test would do. Where an honest test is impractical, I'd rather have no test and a note in the report than a bad test;
+- test runs beyond the directive's level, above all a full rerun after a small fix;
+- evidence beyond the commits, the test command with its summary line, and the doc and memory paths: snapshots, file hashes, retained copies of earlier runs. These only when the directive asks for them;
 - UI polish beyond the plan.
 
 **I prefer:**
@@ -186,7 +198,7 @@ Then I log the close in `board.md`, give the next phase's go (or escalate if it 
 Goal: <one sentence>
 Scope: <plan § items; expected files>
 Out of scope: <explicit>
-Done when: <checklist tailored from §9>
+Done when: <checklist tailored from §9, including the test level: targeted | full at the end>
 Report: DONE with evidence (commits, test command + summary line, doc/memory paths)
 ```
 
